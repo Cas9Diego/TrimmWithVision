@@ -53,16 +53,16 @@ struct ContentView: View {
     }
     
     func drawBoundingBoxes(geometry: GeometryProxy) -> some View  {
-   return   ZStack {
-        ForEach((0...countedBoundingBoxes!.count-1), id: \.self)  {
-          return  Rectangle()
-                .path(in: CGRect(
-                  x: countedBoundingBoxes![$0].minX * geometry.size.width,
-                    y: countedBoundingBoxes![$0].minY * geometry.size.height,
-                    width: countedBoundingBoxes![$0].width * geometry.size.width,
-                    height: countedBoundingBoxes![$0].height * geometry.size.height))
-                .stroke(Color.red, lineWidth: 2.0)
-    }
+        return   ZStack {
+            ForEach((0...countedBoundingBoxes!.count-1), id: \.self)  {
+                return  Rectangle()
+                    .path(in: CGRect(
+                        x: countedBoundingBoxes![$0].minX * geometry.size.width,
+                        y: countedBoundingBoxes![$0].minY * geometry.size.height,
+                        width: countedBoundingBoxes![$0].width * geometry.size.width,
+                        height: countedBoundingBoxes![$0].height * geometry.size.height))
+                    .stroke(Color.red, lineWidth: 2.0)
+            }
         }
     }
     
@@ -75,7 +75,7 @@ struct ContentView: View {
             
             Divider ()
             
-           if faceCountLabel == "" || faceCountLabel == "0 faces detected"  {
+            if faceCountLabel == "" || faceCountLabel == "0 faces detected"  {
                 image?
                     .resizable()
                     .scaledToFit()
@@ -85,23 +85,23 @@ struct ContentView: View {
                     .resizable()
                     .scaledToFit()
                     .overlay(
-
-                                  GeometryReader { geometry in
-                      
-                                         drawBoundingBoxes(geometry: geometry)
-                                   
-                                      Rectangle()
-                                          .path(in: CGRect(
-                                            x: countedBoundingBoxes![0].minX * geometry.size.width,
-                                              y: countedBoundingBoxes![0].minY * geometry.size.height,
-                                              width: countedBoundingBoxes![0].width * geometry.size.width,
-                                              height: countedBoundingBoxes![0].height * geometry.size.height))
-                                          .stroke(Color.red, lineWidth: 2.0)
-
-                                  }
-                          )
+                        
+                        GeometryReader { geometry in
+                            
+                            drawBoundingBoxes(geometry: geometry)
+                            
+                            Rectangle()
+                                .path(in: CGRect(
+                                    x: countedBoundingBoxes![0].minX * geometry.size.width,
+                                    y: countedBoundingBoxes![0].minY * geometry.size.height,
+                                    width: countedBoundingBoxes![0].width * geometry.size.width,
+                                    height: countedBoundingBoxes![0].height * geometry.size.height))
+                                .stroke(Color.red, lineWidth: 2.0)
+                            
+                        }
+                    )
             }
-        
+            
             
             Spacer()
             
@@ -125,26 +125,26 @@ struct ContentView: View {
             Button {
                 
                 self.faceDetection { results in
-//                    print(results?[1].boundingBox, "BoundingBox results")
+                    //                    print(results?[1].boundingBox, "BoundingBox results")
                     if let results = results{
                         var boundingBoxes: [CGRect] = []
                         
                         if results.count == 1 {
                             boundingBoxes.append(results[0].boundingBox)
                         } else if results.count > 1 {
-                        for i in 0...results.count-1 {
-                            boundingBoxes.append(results[i].boundingBox)
-                        }
+                            for i in 0...results.count-1 {
+                                boundingBoxes.append(results[i].boundingBox)
+                            }
                         }
                         
                         self.countedBoundingBoxes = boundingBoxes
                         
                         if results.count == 1 {
-                        self.faceCountLabel = "\(results.count) face detected"
-//                            self.drawBoundingBoxes()
+                            self.faceCountLabel = "\(results.count) face detected"
+                            //                            self.drawBoundingBoxes()
                         } else {
                             self.faceCountLabel = "\(results.count) faces detected"
-//                            self.drawBoundingBoxes()
+                            //                            self.drawBoundingBoxes()
                         }
                         
                     } else {   self.faceCountLabel = "Faces not detected"}
