@@ -13,11 +13,10 @@ import Vision
 
 struct ContentView: View {
     
-    @State private var currentIndex: Int = 0
     @State private var faceCountLabel: String = ""
     @State private var showImagePicker: Bool = false
-    @State private var inputImage: UIImage? = UIImage(named: "twofaces")
-    @State private var image: Image = Image("twofaces")
+    @State private var inputImage: UIImage?
+    @State private var image: Image?
     
     func getImage () {
         guard let inputImage = inputImage else {
@@ -60,7 +59,7 @@ struct ContentView: View {
             Divider ()
             
       
-                image
+                image?
                     .resizable()
                     .scaledToFit()
             Spacer()
@@ -86,7 +85,12 @@ struct ContentView: View {
                 
                 self.faceDetection { results in
                     if let results = results {
-                        self.faceCountLabel = "\(results.count) faces"
+                        if results.count == 1 {
+                        self.faceCountLabel = "\(results.count) face detected"
+                        } else {
+                            self.faceCountLabel = "\(results.count) faces detected"
+                        }
+                        
                     } else {   self.faceCountLabel = "Faces not detected"}
                     
                 }
