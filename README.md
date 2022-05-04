@@ -5,7 +5,7 @@ Count the number of faces in a photo
 Structure
 
 iOS/
-YOu will find the Xcode project containing all you need to run the App. 
+You will find the Xcode project containing all you need to run the App. 
 
 Requirements
 
