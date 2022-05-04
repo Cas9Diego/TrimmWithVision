@@ -18,7 +18,7 @@ struct ContentView: View {
     @State private var showImagePicker: Bool = false
     @State private var inputImage: UIImage?
     @State private var image: Image?
-    @State private var countedBoundingBoxes:[CGRect]?
+    @State private var boundingBoxesArray:[CGRect]?
     @State private var geometryOfImage:GeometryProxy?
     
     func getImage () {
@@ -54,13 +54,13 @@ struct ContentView: View {
     
     func drawBoundingBoxes(geometry: GeometryProxy) -> some View  {
         return   ZStack {
-            ForEach((0...countedBoundingBoxes!.count-1), id: \.self)  {
+            ForEach((0...boundingBoxesArray!.count-1), id: \.self)  {
                 return  Rectangle()
                     .path(in: CGRect(
-                        x: countedBoundingBoxes![$0].minX * geometry.size.width,
-                        y: countedBoundingBoxes![$0].minY * geometry.size.height,
-                        width: countedBoundingBoxes![$0].width * geometry.size.width,
-                        height: countedBoundingBoxes![$0].height * geometry.size.height))
+                        x: boundingBoxesArray![$0].minX * geometry.size.width,
+                        y: boundingBoxesArray![$0].minY * geometry.size.height,
+                        width: boundingBoxesArray![$0].width * geometry.size.width,
+                        height: boundingBoxesArray![$0].height * geometry.size.height))
                     .stroke(Color.red, lineWidth: 2.0)
             }
         }
@@ -92,10 +92,10 @@ struct ContentView: View {
                             
                             Rectangle()
                                 .path(in: CGRect(
-                                    x: countedBoundingBoxes![0].minX * geometry.size.width,
-                                    y: countedBoundingBoxes![0].minY * geometry.size.height,
-                                    width: countedBoundingBoxes![0].width * geometry.size.width,
-                                    height: countedBoundingBoxes![0].height * geometry.size.height))
+                                    x: boundingBoxesArray![0].minX * geometry.size.width,
+                                    y: boundingBoxesArray![0].minY * geometry.size.height,
+                                    width: boundingBoxesArray![0].width * geometry.size.width,
+                                    height: boundingBoxesArray![0].height * geometry.size.height))
                                 .stroke(Color.red, lineWidth: 2.0)
                             
                         }
@@ -137,7 +137,7 @@ struct ContentView: View {
                             }
                         }
                         
-                        self.countedBoundingBoxes = boundingBoxes
+                        self.boundingBoxesArray = boundingBoxes
                         
                         if results.count == 1 {
                             self.faceCountLabel = "\(results.count) face detected"
