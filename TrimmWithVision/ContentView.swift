@@ -74,24 +74,33 @@ struct ContentView: View {
                 Divider ()
                 
                 if faceCountLabel == "" || faceCountLabel == "0"  {
-                    image?
-                        .resizable()
-                        .scaledToFit()
-                    
+                    GeometryReader { geo in
+                        image?
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: geo.size.width * 0.95)
+                            .frame(width: geo.size.width, height: geo.size.height)
+                        //                        .frame(width: UIScreen.main.bounds.width*3/4,
+                        //                               height: UIScreen.main.bounds.height*3/4,
+                        //                               alignment: .center)
+                        
+                    }
                 }
                 else {
-                    image?
-                        .resizable()
-                        .scaledToFit()
-                        .overlay(
-                            
-                            GeometryReader { geometry in
-                                
-                                drawBoundingBoxes(geometry: geometry)
-                                
-                                
-                            }
-                        )
+                    GeometryReader { geo in
+                        ZStack {
+                            image?
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: geo.size.width * 0.95)
+                                .frame(width: geo.size.width, height: geo.size.height)
+                        }
+                        
+                        drawBoundingBoxes(geometry: geo)
+                        
+                        
+                        
+                    }
                 }
                 
                 Spacer()
@@ -99,55 +108,55 @@ struct ContentView: View {
                 Divider()
                 
                 HStack {
-                Button {
-                    showImagePicker = true
-                    self.faceCountLabel = ""
-                    
-                } label: {
-                    Text ("Choose picture")
-                }
-                .padding()
-                .foregroundColor(Color.white)
-                .background(Color.blue)
-                .cornerRadius(8)
-                
-                
-                Button {
-                    
-                    self.faceDetection { results in
-                        if let results = results{
-                            var boundingBoxes: [CGRect] = []
-                            
-                            if results.count == 1 {
-                                boundingBoxes.append(results[0].boundingBox)
-                            } else if results.count > 1 {
-                                for i in 0...results.count-1 {
-                                    boundingBoxes.append(results[i].boundingBox)
-                                }
-                            }
-                            
-                            self.boundingBoxesArray = boundingBoxes
-                            
-                            if results.count == 1 {
-                                self.faceCountLabel = "\(results.count)"
-  
-                            } else {
-                                self.faceCountLabel = "\(results.count)"
-
-                            }
-                            
-                        } else {   self.faceCountLabel = "Faces not detected"}
+                    Button {
+                        showImagePicker = true
+                        self.faceCountLabel = ""
                         
+                    } label: {
+                        Text ("Choose picture")
                     }
-                } label: {
-                    Text ("Scan")
+                    .padding()
+                    .foregroundColor(Color.white)
+                    .background(Color.blue)
+                    .cornerRadius(8)
+                    
+                    
+                    Button {
+                        
+                        self.faceDetection { results in
+                            if let results = results{
+                                var boundingBoxes: [CGRect] = []
+                                
+                                if results.count == 1 {
+                                    boundingBoxes.append(results[0].boundingBox)
+                                } else if results.count > 1 {
+                                    for i in 0...results.count-1 {
+                                        boundingBoxes.append(results[i].boundingBox)
+                                    }
+                                }
+                                
+                                self.boundingBoxesArray = boundingBoxes
+                                
+                                if results.count == 1 {
+                                    self.faceCountLabel = "\(results.count)"
+                                    
+                                } else {
+                                    self.faceCountLabel = "\(results.count)"
+                                    
+                                }
+                                
+                            } else {   self.faceCountLabel = "Faces not detected"}
+                            
+                        }
+                    } label: {
+                        Text ("Scan")
+                    }
+                    .padding()
+                    .foregroundColor(Color.white)
+                    .background(Color.green)
+                    .cornerRadius(8)
+                    
                 }
-                .padding()
-                .foregroundColor(Color.white)
-                .background(Color.green)
-                .cornerRadius(8)
-                
-            }
                 .padding(.bottom, 10)
                 .padding(.top, 10)
                 if image != nil {
@@ -157,7 +166,7 @@ struct ContentView: View {
                         Text ("Detected faces: 0")
                             .padding(.bottom)
                     } else {
-                Text ("Detected faces: \(self.faceCountLabel)")
+                        Text ("Detected faces: \(self.faceCountLabel)")
                             .padding(.bottom)
                     }
                 } else {
