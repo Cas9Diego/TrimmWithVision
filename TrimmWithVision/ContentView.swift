@@ -67,104 +67,110 @@ struct ContentView: View {
     }
     
     var body: some View {
-        VStack {
-            Text ("Face Detection")
-                .font(.system(size: 34))
-                .fontWeight(.heavy)
-            Spacer()
-            
-            Divider ()
-            
-            if faceCountLabel == "" || faceCountLabel == "0 faces detected"  {
-                image?
-                    .resizable()
-                    .scaledToFit()
-            }
-            else {
-                image?
-                    .resizable()
-                    .scaledToFit()
-                    .overlay(
-                        
-                        GeometryReader { geometry in
-                            
-                            drawBoundingBoxes(geometry: geometry)
-                            
-                            Rectangle()
-                                .path(in: CGRect(
-                                    x: boundingBoxesArray![0].minX * geometry.size.width,
-                                    y: boundingBoxesArray![0].minY * geometry.size.height,
-                                    width: boundingBoxesArray![0].width * geometry.size.width,
-                                    height: boundingBoxesArray![0].height * geometry.size.height))
-                                .stroke(Color.red, lineWidth: 2.0)
-                            
-                        }
-                    )
-            }
-            
-            
-            Spacer()
-            
-            
-            
-            Divider()
-            
-            Button {
-                showImagePicker = true
-                self.faceCountLabel = ""
+        NavigationView {
+            VStack {
                 
-            } label: {
-                Text ("Choose picture")
-            }
-            .padding()
-            .foregroundColor(Color.white)
-            .background(Color.blue)
-            .cornerRadius(8)
-            
-            
-            Button {
+                Divider ()
                 
-                self.faceDetection { results in
-                    //                    print(results?[1].boundingBox, "BoundingBox results")
-                    if let results = results{
-                        var boundingBoxes: [CGRect] = []
-                        
-                        if results.count == 1 {
-                            boundingBoxes.append(results[0].boundingBox)
-                        } else if results.count > 1 {
-                            for i in 0...results.count-1 {
-                                boundingBoxes.append(results[i].boundingBox)
-                            }
-                        }
-                        
-                        self.boundingBoxesArray = boundingBoxes
-                        
-                        if results.count == 1 {
-                            self.faceCountLabel = "\(results.count) face detected"
-                            //                            self.drawBoundingBoxes()
-                        } else {
-                            self.faceCountLabel = "\(results.count) faces detected"
-                            //                            self.drawBoundingBoxes()
-                        }
-                        
-                    } else {   self.faceCountLabel = "Faces not detected"}
+                if faceCountLabel == "" || faceCountLabel == "0 faces detected"  {
+                    image?
+                        .resizable()
+                        .scaledToFit()
                     
                 }
-            } label: {
-                Text ("Face Count")
+                else {
+                    image?
+                        .resizable()
+                        .scaledToFit()
+                        .overlay(
+                            
+                            GeometryReader { geometry in
+                                
+                                drawBoundingBoxes(geometry: geometry)
+                                
+                                
+                            }
+                        )
+                }
+                
+                
+                Spacer()
+                
+                
+                
+                Divider()
+                
+                Button {
+                    showImagePicker = true
+                    self.faceCountLabel = ""
+                    
+                } label: {
+                    Text ("Choose picture")
+                }
+                .padding()
+                .foregroundColor(Color.white)
+                .background(Color.blue)
+                .cornerRadius(8)
+                
+                
+                Button {
+                    
+                    self.faceDetection { results in
+                        //                    print(results?[1].boundingBox, "BoundingBox results")
+                        if let results = results{
+                            var boundingBoxes: [CGRect] = []
+                            
+                            if results.count == 1 {
+                                boundingBoxes.append(results[0].boundingBox)
+                            } else if results.count > 1 {
+                                for i in 0...results.count-1 {
+                                    boundingBoxes.append(results[i].boundingBox)
+                                }
+                            }
+                            
+                            self.boundingBoxesArray = boundingBoxes
+                            
+                            if results.count == 1 {
+                                self.faceCountLabel = "\(results.count) face detected"
+  
+                            } else {
+                                self.faceCountLabel = "\(results.count) faces detected"
+
+                            }
+                            
+                        } else {   self.faceCountLabel = "Faces not detected"}
+                        
+                    }
+                } label: {
+                    Text ("Face Count")
+                }
+                .padding()
+                .foregroundColor(Color.white)
+                .background(Color.blue)
+                .cornerRadius(8)
+                
+                Text (self.faceCountLabel)
+                
             }
-            .padding()
-            .foregroundColor(Color.white)
-            .background(Color.blue)
-            .cornerRadius(8)
-            
-            Text (self.faceCountLabel)
+            .sheet(isPresented: $showImagePicker) {
+                
+                ImagePicker(image: $inputImage)
+                
+            }
+            .onChange(of: inputImage) { _ in getImage() }
+            .navigationTitle("Face detection")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        faceCountLabel = ""
+                        image = nil
+                    } label: {
+                        Image(systemName: "arrow.uturn.left.circle")
+                    }
+                }
+            }
             
         }
-        .sheet(isPresented: $showImagePicker) {
-            ImagePicker(image: $inputImage)
-        }
-        .onChange(of: inputImage) { _ in getImage() }
     }
 }
 
