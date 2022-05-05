@@ -53,6 +53,7 @@ struct ContentView: View {
     }
     
     func drawBoundingBoxes(geometry: GeometryProxy) -> some View  {
+        
         return   ZStack {
             ForEach((0...boundingBoxesArray!.count-1), id: \.self)  {
                 return  Rectangle()
@@ -61,7 +62,7 @@ struct ContentView: View {
                         y: boundingBoxesArray![$0].minY * geometry.size.height,
                         width: boundingBoxesArray![$0].width * geometry.size.width,
                         height: boundingBoxesArray![$0].height * geometry.size.height))
-                    .stroke(Color.red, lineWidth: 2.0)
+                    .stroke(Color.yellow, lineWidth: 1.5)
             }
         }
     }
@@ -72,7 +73,7 @@ struct ContentView: View {
                 
                 Divider ()
                 
-                if faceCountLabel == "" || faceCountLabel == "0 faces detected"  {
+                if faceCountLabel == "" || faceCountLabel == "0"  {
                     image?
                         .resizable()
                         .scaledToFit()
@@ -93,13 +94,11 @@ struct ContentView: View {
                         )
                 }
                 
-                
                 Spacer()
-                
-                
                 
                 Divider()
                 
+                HStack {
                 Button {
                     showImagePicker = true
                     self.faceCountLabel = ""
@@ -116,7 +115,6 @@ struct ContentView: View {
                 Button {
                     
                     self.faceDetection { results in
-                        //                    print(results?[1].boundingBox, "BoundingBox results")
                         if let results = results{
                             var boundingBoxes: [CGRect] = []
                             
@@ -131,10 +129,10 @@ struct ContentView: View {
                             self.boundingBoxesArray = boundingBoxes
                             
                             if results.count == 1 {
-                                self.faceCountLabel = "\(results.count) face detected"
+                                self.faceCountLabel = "\(results.count)"
   
                             } else {
-                                self.faceCountLabel = "\(results.count) faces detected"
+                                self.faceCountLabel = "\(results.count)"
 
                             }
                             
@@ -142,14 +140,30 @@ struct ContentView: View {
                         
                     }
                 } label: {
-                    Text ("Face Count")
+                    Text ("Scan")
                 }
                 .padding()
                 .foregroundColor(Color.white)
-                .background(Color.blue)
+                .background(Color.green)
                 .cornerRadius(8)
                 
-                Text (self.faceCountLabel)
+            }
+                .padding(.bottom, 10)
+                .padding(.top, 10)
+                if image != nil {
+                    if self.faceCountLabel == "" {
+                        Text ("Tap the Scan Button")
+                    } else if self.faceCountLabel == "0" {
+                        Text ("Detected faces: 0")
+                            .padding(.bottom)
+                    } else {
+                Text ("Detected faces: \(self.faceCountLabel)")
+                            .padding(.bottom)
+                    }
+                } else {
+                    Text ("No pictures found")
+                        .padding(.bottom)
+                }
                 
             }
             .sheet(isPresented: $showImagePicker) {
