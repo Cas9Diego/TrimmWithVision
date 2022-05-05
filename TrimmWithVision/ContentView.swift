@@ -108,6 +108,7 @@ struct ContentView: View {
                 Divider()
                 
                 HStack {
+                    
                     Button {
                         showImagePicker = true
                         self.faceCountLabel = ""
@@ -122,7 +123,7 @@ struct ContentView: View {
                     
                     
                     Button {
-                        
+                        if image != nil {
                         self.faceDetection { results in
                             if let results = results{
                                 var boundingBoxes: [CGRect] = []
@@ -148,6 +149,7 @@ struct ContentView: View {
                             } else {   self.faceCountLabel = "Faces not detected"}
                             
                         }
+                    }
                     } label: {
                         Text ("Scan")
                     }
