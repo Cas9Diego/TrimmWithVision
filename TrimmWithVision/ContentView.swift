@@ -20,6 +20,8 @@ struct ContentView: View {
     @State private var image: Image?
     @State private var boundingBoxesArray:[CGRect]?
     @State private var geometryOfImage:GeometryProxy?
+    var spacerMinLenght: Double = 10
+    let transitionDuration: Double = 0.3
     
     func getImage () {
         guard let inputImage = inputImage else {
@@ -56,7 +58,7 @@ struct ContentView: View {
         
         return   ZStack {
             ForEach((0...boundingBoxesArray!.count-1), id: \.self)  {
-                return  Rectangle()
+                    Rectangle()
                     .path(in: CGRect(
                         x: boundingBoxesArray![$0].minX * geometry.size.width,
                         y: boundingBoxesArray![$0].minY * geometry.size.height,
@@ -67,116 +69,178 @@ struct ContentView: View {
         }
     }
     
+    func roundedRectangleFilled (cornerRadious: Double, width: Double, height: Double, color: Color, alignment: Alignment ) -> some View {
+        return RoundedRectangle(cornerRadius: cornerRadious, style: .continuous)
+            .fill(color)
+            .frame(width: width,
+                   height: height,
+                   alignment: alignment)
+        
+    }
+    
+    func roundedRectangleStroke (cornerRadious: Double, width: Double, height: Double, strokeColor: Color, lineWidth: Double, alignment: Alignment ) -> some View {
+        return RoundedRectangle(cornerRadius: cornerRadious, style: .continuous)
+            .strokeBorder(strokeColor, lineWidth: lineWidth)
+            .frame(width: width,
+                   height: height,
+                   alignment: alignment)
+        
+    }
+    
     var body: some View {
         NavigationView {
             VStack {
                 
-                Divider ()
-                
-                if faceCountLabel == "" || faceCountLabel == "0"  {
-                    GeometryReader { geo in
-                        image?
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: geo.size.width * 0.95)
-                            .frame(width: geo.size.width, height: geo.size.height)
-                        //                        .frame(width: UIScreen.main.bounds.width*3/4,
-                        //                               height: UIScreen.main.bounds.height*3/4,
-                        //                               alignment: .center)
+                if image == nil {
+                    Button {
+                        showImagePicker = true
+                        self.faceCountLabel = ""
+                    } label: {
+                        ZStack {
+                            roundedRectangleStroke(cornerRadious: 25, width: UIScreen.main.bounds.width*(9/10), height: UIScreen.main.bounds.height*(2/4), strokeColor: Color.black, lineWidth: 8, alignment: .center)
+                            
+                            roundedRectangleFilled(cornerRadious: 25, width: UIScreen.main.bounds.width*(9/10), height: UIScreen.main.bounds.height*(2/4), color: Color(UIColor.lightGray).opacity(0.3), alignment: .center)
+                            
+                            VStack {
+                                Image(systemName: "plus")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: UIScreen.main.bounds.width*1/12,
+                                           alignment: .center)
+                                
+                                Text ("Choose a picture ")
+                                    .font(.custom("Arial", size: 20))
+                            }
+                            
+                            
+                            
+                        }
+                    }
+                    
+                }
+                else if faceCountLabel == "" || faceCountLabel == "0"  {
+                    ZStack {
+                        roundedRectangleStroke(cornerRadious: 25, width: UIScreen.main.bounds.width*(9/10), height: UIScreen.main.bounds.height*(2/4), strokeColor: Color.black, lineWidth: 8, alignment: .center)
                         
+                        GeometryReader { geo in
+                            VStack {
+                 
+                                Spacer(minLength: spacerMinLenght)
+                                image?
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: geo.size.width * 0.9)
+                                    .frame(width: geo.size.width * 1)
+                                
+                                Spacer(minLength: spacerMinLenght)
+                            }
+                            
+                        }
                     }
                 }
                 else {
-                    GeometryReader { geo in
-                        ZStack {
-                            image?
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: geo.size.width * 0.95)
-                                .frame(width: geo.size.width, height: geo.size.height)
+                    ZStack {
+                        roundedRectangleStroke(cornerRadious: 25, width: UIScreen.main.bounds.width*(9/10), height: UIScreen.main.bounds.height*(2/4), strokeColor: Color.black, lineWidth: 8, alignment: .center)
+                        GeometryReader { geo in
+                            VStack {
+                                Spacer(minLength: spacerMinLenght)
+                                image?
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: geo.size.width * 0.9)
+                                    .frame(width: geo.size.width * 1)
+                                Spacer(minLength: spacerMinLenght)
+                            }
+                            
+                            drawBoundingBoxes(geometry: geo)
+                            
                         }
-                        
-                        drawBoundingBoxes(geometry: geo)
-                        
-                        
-                        
                     }
                 }
                 
+                
                 Spacer()
                 
-                Divider()
+                if image != nil {
+                    
+                    if self.faceCountLabel == "" {
+                        Text ("Tap the Scan Button")
+                            .font(.custom("Arial", size: 23))
+                            .foregroundColor(.green)
+                            .padding()
+                            .transition(AnyTransition.opacity.animation(.easeInOut(duration: transitionDuration)))
+                    } else if self.faceCountLabel == "0" {
+                        Text ("0 faces detected")
+                            .font(.custom("Arial", size: 23))
+                            .padding()
+                            .transition(AnyTransition.opacity.animation(.easeInOut(duration:transitionDuration)))
+                    }
+                    else if self.faceCountLabel == "1" {
+                        Text ("\(self.faceCountLabel) face detected")
+                            .font(.custom("Arial", size: 23))
+                            .foregroundColor(.green)
+                            .padding()
+                        .transition(AnyTransition.opacity.animation(.easeInOut(duration:transitionDuration))) }
+                    else {
+                        Text ("\(self.faceCountLabel) faces detected")
+                            .font(.custom("Arial", size: 23))
+                            .foregroundColor(.green)
+                            .padding()
+                            .transition(AnyTransition.opacity.animation(.easeInOut(duration:transitionDuration)))
+                    }
+                } else {
+                    Text ("No picture selected 👀")
+                        .font(.custom("Arial", size: 23))
+                        .foregroundColor(.red)
+                        .padding()
+                        .transition(AnyTransition.opacity.animation(.easeInOut(duration:transitionDuration)))
+                }
                 
                 HStack {
                     
                     Button {
-                        showImagePicker = true
-                        self.faceCountLabel = ""
-                        
-                    } label: {
-                        Text ("Choose picture")
-                    }
-                    .padding()
-                    .foregroundColor(Color.white)
-                    .background(Color.blue)
-                    .cornerRadius(8)
-                    
-                    
-                    Button {
                         if image != nil {
-                        self.faceDetection { results in
-                            if let results = results{
-                                var boundingBoxes: [CGRect] = []
-                                
-                                if results.count == 1 {
-                                    boundingBoxes.append(results[0].boundingBox)
-                                } else if results.count > 1 {
-                                    for i in 0...results.count-1 {
-                                        boundingBoxes.append(results[i].boundingBox)
+                            self.faceDetection { results in
+                                if let results = results{
+                                    var boundingBoxes: [CGRect] = []
+                                    
+                                    if results.count == 1 {
+                                        boundingBoxes.append(results[0].boundingBox)
+                                    } else if results.count > 1 {
+                                        for i in 0...results.count-1 {
+                                            boundingBoxes.append(results[i].boundingBox)
+                                        }
                                     }
-                                }
-                                
-                                self.boundingBoxesArray = boundingBoxes
-                                
-                                if results.count == 1 {
-                                    self.faceCountLabel = "\(results.count)"
                                     
-                                } else {
-                                    self.faceCountLabel = "\(results.count)"
+                                    self.boundingBoxesArray = boundingBoxes
                                     
-                                }
+                                        self.faceCountLabel = "\(results.count)"
                                 
-                            } else {   self.faceCountLabel = "Faces not detected"}
+                                    
+                                } else {   self.faceCountLabel = "Faces not detected"}
+                                
+                            }
+                        }
+                    } label: {
+                        ZStack {
                             
+                            roundedRectangleFilled(cornerRadious: 8, width: UIScreen.main.bounds.width*0.5, height: UIScreen.main.bounds.height*0.07, color: Color(uiColor: .systemGreen), alignment: .center)
+                            
+                            roundedRectangleStroke(cornerRadious: 8, width: UIScreen.main.bounds.width*0.5, height: UIScreen.main.bounds.height*0.07, strokeColor: Color(uiColor: .systemGray), lineWidth: 1, alignment: .center)
+                            
+                            Text ("Scan")
+                                .font(.system(size: 25))
                         }
                     }
-                    } label: {
-                        Text ("Scan")
-                    }
-                    .padding()
                     .foregroundColor(Color.white)
-                    .background(Color.green)
                     .cornerRadius(8)
                     
-                }
-                .padding(.bottom, 10)
-                .padding(.top, 10)
-                if image != nil {
-                    if self.faceCountLabel == "" {
-                        Text ("Tap the Scan Button")
-                    } else if self.faceCountLabel == "0" {
-                        Text ("Detected faces: 0")
-                            .padding(.bottom)
-                    } else {
-                        Text ("Detected faces: \(self.faceCountLabel)")
-                            .padding(.bottom)
-                    }
-                } else {
-                    Text ("No pictures found")
-                        .padding(.bottom)
                 }
                 
             }
+            .frame(width: UIScreen.main.bounds.width*9/10,
+                   height: UIScreen.main.bounds.height*1/4,
+                   alignment: .center)
             .sheet(isPresented: $showImagePicker) {
                 
                 ImagePicker(image: $inputImage)
@@ -185,12 +249,22 @@ struct ContentView: View {
             .onChange(of: inputImage) { _ in getImage() }
             .navigationTitle("Face detection")
             .toolbar {
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showImagePicker = true
+                        self.faceCountLabel = ""
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         faceCountLabel = ""
                         image = nil
                     } label: {
-                        Image(systemName: "arrow.uturn.left.circle")
+                        Image(systemName: "minus.circle")
                     }
                 }
             }
