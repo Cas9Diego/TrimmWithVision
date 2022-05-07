@@ -131,7 +131,7 @@ struct ContentView: View {
                         ZStack {
                             roundedRectangleStroke(cornerRadious: 25, width: UIScreen.main.bounds.width*(9/10), height: UIScreen.main.bounds.height*(2/4), strokeColor: Color.black, lineWidth: 8, alignment: .center)
                             
-                            roundedRectangleFilled(cornerRadious: 25, width: UIScreen.main.bounds.width*(9/10), height: UIScreen.main.bounds.height*(2/4), color: Color(UIColor.lightGray).opacity(0.3), alignment: .center)
+                            roundedRectangleFilled(cornerRadious: 25, width: UIScreen.main.bounds.width*(9/10), height: UIScreen.main.bounds.height*(2/4), color: Color(UIColor.lightGray).opacity(0.2), alignment: .center)
                             
                             VStack {
                                 Image(systemName: "plus")
@@ -290,7 +290,7 @@ struct ContentView: View {
                         faceCountLabel = ""
                         showImagePicker = true
                         self.faceCountLabel = ""
-                        image = nil
+                        self.boundingBoxes = []
                     } label: {
                         Image(systemName: "plus")
                     }
@@ -300,6 +300,7 @@ struct ContentView: View {
                     Button {
                         faceCountLabel = ""
                         image = nil
+                        self.boundingBoxes = []
                     } label: {
                         Image(systemName: "minus.circle")
                     }
