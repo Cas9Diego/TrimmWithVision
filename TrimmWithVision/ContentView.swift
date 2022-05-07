@@ -20,6 +20,7 @@ struct ContentView: View {
     @State private var image: Image?
     @State private var boundingBoxesArray:[CGRect]?
     @State private var geometryOfImage:GeometryProxy?
+    @State private var boundingBoxes: [CGRect] = []
     var spacerMinLenght: Double = 10
     let transitionDuration: Double = 0.3
     
@@ -36,13 +37,16 @@ struct ContentView: View {
         guard let image=inputImage,
               let ciImage = CIImage(image: image),
               let cgImage=CIContext(options: nil).createCGImage(ciImage, from: ciImage.extent ),
-              let orientation = CGImagePropertyOrientation(rawValue: UInt32(image.imageOrientation.rawValue)) else {
+              let orientation = inputImage?.imageOrientation.rawValue else {
             return completion (nil)
         }
         
         let request = VNDetectFaceRectanglesRequest()
         
-        let handler = VNImageRequestHandler(cgImage: cgImage,orientation: orientation, options: [:])
+        
+        
+        let handler = VNImageRequestHandler(cgImage: cgImage,orientation: getCGOrientationFromUIImage(orientation), options: [:])
+        print(inputImage!.imageOrientation.rawValue, "The orientation")
         
         DispatchQueue.global().async {
             try? handler.perform([request])
@@ -57,6 +61,7 @@ struct ContentView: View {
     func drawBoundingBoxes(geometry: GeometryProxy) -> some View  {
         
         return   ZStack {
+     
             ForEach((0...boundingBoxesArray!.count-1), id: \.self)  {
                     Rectangle()
                     .path(in: CGRect(
@@ -66,6 +71,32 @@ struct ContentView: View {
                         height: boundingBoxesArray![$0].height * geometry.size.height))
                     .stroke(Color.yellow, lineWidth: 1.5)
             }
+        
+        }
+    }
+    
+    
+    func getCGOrientationFromUIImage(_ uiOrientationValue: Int?) -> CGImagePropertyOrientation {
+//Since the return from the metadata coming from a UIImage is incompatible with the metadata from CGImagePropertyOrientation, a sort of "dictionary" is needed.
+        switch uiOrientationValue {
+        case 0:
+            return .down //Hecho
+        case 1:
+            return .right //Hecho
+        case 2:
+            return .up //Hecho
+        case 3:
+            return .rightMirrored //Hecho
+        case 4:
+            return .left
+        case 5:
+            return .upMirrored
+        case 6:
+            return .downMirrored
+        case 7:
+            return .leftMirrored
+        @unknown default:
+            fatalError()
         }
     }
     
@@ -86,6 +117,7 @@ struct ContentView: View {
                    alignment: alignment)
         
     }
+    
     
     var body: some View {
         NavigationView {
@@ -118,13 +150,15 @@ struct ContentView: View {
                     }
                     
                 }
-                else if faceCountLabel == "" || faceCountLabel == "0"  {
+                else if faceCountLabel == "" || faceCountLabel == "0" || self.boundingBoxes == [] {
                     ZStack {
                         roundedRectangleStroke(cornerRadious: 25, width: UIScreen.main.bounds.width*(9/10), height: UIScreen.main.bounds.height*(2/4), strokeColor: Color.black, lineWidth: 8, alignment: .center)
                         
                         GeometryReader { geo in
                             VStack {
-                 
+                                //                                Rectangle()
+                                //                                                                    .fill(Color.red)
+                                //                                                                    .frame(width: geo.size.width*1 )
                                 Spacer(minLength: spacerMinLenght)
                                 image?
                                     .resizable()
@@ -152,6 +186,7 @@ struct ContentView: View {
                                 Spacer(minLength: spacerMinLenght)
                             }
                             
+                            
                             drawBoundingBoxes(geometry: geo)
                             
                         }
@@ -169,7 +204,7 @@ struct ContentView: View {
                             .foregroundColor(.green)
                             .padding()
                             .transition(AnyTransition.opacity.animation(.easeInOut(duration: transitionDuration)))
-                    } else if self.faceCountLabel == "0" {
+                    } else if self.faceCountLabel == "0"  || self.faceCountLabel == "Faces not detected" {
                         Text ("0 faces detected")
                             .font(.custom("Arial", size: 23))
                             .padding()
@@ -202,7 +237,6 @@ struct ContentView: View {
                         if image != nil {
                             self.faceDetection { results in
                                 if let results = results{
-                                    var boundingBoxes: [CGRect] = []
                                     
                                     if results.count == 1 {
                                         boundingBoxes.append(results[0].boundingBox)
@@ -220,6 +254,7 @@ struct ContentView: View {
                                 } else {   self.faceCountLabel = "Faces not detected"}
                                 
                             }
+                            print(self.faceCountLabel, "Countlabel")
                         }
                     } label: {
                         ZStack {
@@ -252,8 +287,10 @@ struct ContentView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
+                        faceCountLabel = ""
                         showImagePicker = true
                         self.faceCountLabel = ""
+                        image = nil
                     } label: {
                         Image(systemName: "plus")
                     }
