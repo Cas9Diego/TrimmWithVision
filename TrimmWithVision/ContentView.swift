@@ -42,7 +42,8 @@ struct ContentView: View {
         }
         
         let request = VNDetectFaceRectanglesRequest()
-        
+        request.revision = VNDetectFaceRectanglesRequestRevision3
+
         
         
         let handler = VNImageRequestHandler(cgImage: cgImage,orientation: getCGOrientationFromUIImage(orientation), options: [:])
@@ -78,6 +79,30 @@ struct ContentView: View {
     
     func getCGOrientationFromUIImage(_ uiOrientationValue: Int?) -> CGImagePropertyOrientation {
 //Since the return from the metadata coming from a UIImage is incompatible with the metadata from CGImagePropertyOrientation, a sort of "dictionary" is needed.
+        print((inputImage!.size.height/inputImage!.size.width), "Ratio")
+        if (inputImage!.size.height/inputImage!.size.width) <= 1 {
+            //This dispossition is the result of a trial and error research about the orientation obtained throught the Image.Orientation feature. Apparetly, with landscape photoes, the orinetaton should be modified in a mirrored way compared to that thrown by the orientation feature. 
+            switch uiOrientationValue {
+            case 0:
+                return .downMirrored //Hecho
+            case 1:
+                return .upMirrored //Hecho
+            case 2:
+                return .right //Hecho
+            case 3:
+                return .left //Hecho
+            case 4:
+                return .upMirrored
+            case 5:
+                return .down
+            case 6:
+                return .rightMirrored
+            case 7:
+                return .leftMirrored
+            @unknown default:
+                fatalError()
+            }
+        } else {
         switch uiOrientationValue {
         case 0:
             return .down //Hecho
@@ -98,6 +123,7 @@ struct ContentView: View {
         @unknown default:
             fatalError()
         }
+    }
     }
     
     func roundedRectangleFilled (cornerRadious: Double, width: Double, height: Double, color: Color, alignment: Alignment ) -> some View {
