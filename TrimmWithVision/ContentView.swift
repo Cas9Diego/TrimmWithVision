@@ -81,16 +81,16 @@ struct ContentView: View {
 //Since the return from the metadata coming from a UIImage is incompatible with the metadata from CGImagePropertyOrientation, a sort of "dictionary" is needed.
         print((inputImage!.size.height/inputImage!.size.width), "Ratio")
         if (inputImage!.size.height/inputImage!.size.width) <= 1 {
-            //This dispossition is the result of a trial and error research about the orientation obtained throught the Image.Orientation feature. Apparetly, with landscape photoes, the orinetaton should be modified in a mirrored way compared to that thrown by the orientation feature. 
+            //This dispossition is the result of a trial and error research about the orientation obtained throught the Image.Orientation feature. Apparetly, with landscape photoes, the orinetaton should be modified in a mirrored way compared to that thrown by the orientation feature.
             switch uiOrientationValue {
             case 0:
-                return .downMirrored //Hecho
+                return .downMirrored //Check
             case 1:
-                return .upMirrored //Hecho
+                return .upMirrored //Check
             case 2:
-                return .right //Hecho
+                return .right //Check
             case 3:
-                return .left //Hecho
+                return .left //Check
             case 4:
                 return .upMirrored
             case 5:
@@ -104,14 +104,15 @@ struct ContentView: View {
             }
         } else {
         switch uiOrientationValue {
+//            This feature appears to have some kind of problem woth left and right when it comes to portrait photos. Whereas it has a problem with up and down when it comes to landscape photos. The options were deined based on trial and error.
         case 0:
-            return .down //Hecho
+            return .downMirrored //Check
         case 1:
-            return .right //Hecho
+            return .rightMirrored //Check
         case 2:
-            return .up //Hecho
+            return .up //Check
         case 3:
-            return .rightMirrored //Hecho
+            return .rightMirrored //Check
         case 4:
             return .left
         case 5:
@@ -280,7 +281,6 @@ struct ContentView: View {
                                 } else {   self.faceCountLabel = "Faces not detected"}
                                 
                             }
-                            print(self.faceCountLabel, "Countlabel")
                         }
                     } label: {
                         ZStack {
