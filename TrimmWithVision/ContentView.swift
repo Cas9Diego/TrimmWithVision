@@ -22,7 +22,7 @@ struct ContentView: View {
     @State private var geometryOfImage:GeometryProxy?
     @State private var boundingBoxes: [CGRect] = []
     var spacerMinLenght: Double = 10
-    let transitionDuration: Double = 0.3
+    let textTransitionDuration: Double = 0.3
     
     func getImage () {
         guard let inputImage = inputImage else {
@@ -183,9 +183,7 @@ struct ContentView: View {
                         
                         GeometryReader { geo in
                             VStack {
-                                //                                Rectangle()
-                                //                                                                    .fill(Color.red)
-                                //                                                                    .frame(width: geo.size.width*1 )
+
                                 Spacer(minLength: spacerMinLenght)
                                 image?
                                     .resizable()
@@ -230,32 +228,32 @@ struct ContentView: View {
                             .font(.custom("Arial", size: 23))
                             .foregroundColor(.green)
                             .padding()
-                            .transition(AnyTransition.opacity.animation(.easeInOut(duration: transitionDuration)))
+                            .transition(AnyTransition.opacity.animation(.easeInOut(duration: textTransitionDuration)))
                     } else if self.faceCountLabel == "0"  || self.faceCountLabel == "Faces not detected" {
                         Text ("0 faces detected")
                             .font(.custom("Arial", size: 23))
                             .padding()
-                            .transition(AnyTransition.opacity.animation(.easeInOut(duration:transitionDuration)))
+                            .transition(AnyTransition.opacity.animation(.easeInOut(duration:textTransitionDuration)))
                     }
                     else if self.faceCountLabel == "1" {
                         Text ("\(self.faceCountLabel) face detected")
                             .font(.custom("Arial", size: 23))
                             .foregroundColor(.green)
                             .padding()
-                        .transition(AnyTransition.opacity.animation(.easeInOut(duration:transitionDuration))) }
+                        .transition(AnyTransition.opacity.animation(.easeInOut(duration:textTransitionDuration))) }
                     else {
                         Text ("\(self.faceCountLabel) faces detected")
                             .font(.custom("Arial", size: 23))
                             .foregroundColor(.green)
                             .padding()
-                            .transition(AnyTransition.opacity.animation(.easeInOut(duration:transitionDuration)))
+                            .transition(AnyTransition.opacity.animation(.easeInOut(duration:textTransitionDuration)))
                     }
                 } else {
                     Text ("No picture selected 👀")
                         .font(.custom("Arial", size: 23))
                         .foregroundColor(.red)
                         .padding()
-                        .transition(AnyTransition.opacity.animation(.easeInOut(duration:transitionDuration)))
+                        .transition(AnyTransition.opacity.animation(.easeInOut(duration:textTransitionDuration)))
                 }
                 
                 HStack {
