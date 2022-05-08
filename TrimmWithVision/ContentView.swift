@@ -152,7 +152,7 @@ struct ContentView: View {
                 }
                 else if faceCountLabel == "" || faceCountLabel == "0" || self.boundingBoxes == [] {
                     ZStack {
-                        roundedRectangleStroke(cornerRadious: 25, width: UIScreen.main.bounds.width*(9/10), height: UIScreen.main.bounds.height*(2/4), strokeColor: Color.black, lineWidth: 8, alignment: .center)
+                        roundedRectangleStroke(cornerRadious: 25, width: UIScreen.main.bounds.width*(9/10), height: UIScreen.main.bounds.height*(2/4), strokeColor: Color(UIColor.lightGray), lineWidth: 8, alignment: .center)
                         
                         GeometryReader { geo in
                             VStack {
@@ -174,7 +174,7 @@ struct ContentView: View {
                 }
                 else {
                     ZStack {
-                        roundedRectangleStroke(cornerRadious: 25, width: UIScreen.main.bounds.width*(9/10), height: UIScreen.main.bounds.height*(2/4), strokeColor: Color.black, lineWidth: 8, alignment: .center)
+                        roundedRectangleStroke(cornerRadious: 25, width: UIScreen.main.bounds.width*(9/10), height: UIScreen.main.bounds.height*(2/4), strokeColor: Color(UIColor.lightGray), lineWidth: 8, alignment: .center)
                         GeometryReader { geo in
                             VStack {
                                 Spacer(minLength: spacerMinLenght)
