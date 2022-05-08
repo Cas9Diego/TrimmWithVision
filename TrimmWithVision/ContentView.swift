@@ -129,7 +129,7 @@ struct ContentView: View {
                         self.faceCountLabel = ""
                     } label: {
                         ZStack {
-                            roundedRectangleStroke(cornerRadious: 25, width: UIScreen.main.bounds.width*(9/10), height: UIScreen.main.bounds.height*(2/4), strokeColor: Color.black, lineWidth: 8, alignment: .center)
+                            roundedRectangleStroke(cornerRadious: 25, width: UIScreen.main.bounds.width*(9/10), height: UIScreen.main.bounds.height*(2/4), strokeColor: Color(UIColor.lightGray), lineWidth: 8, alignment: .center)
                             
                             roundedRectangleFilled(cornerRadious: 25, width: UIScreen.main.bounds.width*(9/10), height: UIScreen.main.bounds.height*(2/4), color: Color(UIColor.lightGray).opacity(0.2), alignment: .center)
                             
