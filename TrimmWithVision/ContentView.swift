@@ -48,6 +48,7 @@ struct ContentView: View {
         
         let handler = VNImageRequestHandler(cgImage: cgImage,orientation: getCGOrientationFromUIImage(orientation), options: [:])
         print(inputImage!.imageOrientation.rawValue, "The orientation")
+        print((inputImage!.size.height/inputImage!.size.width), "Ratio")
         
         DispatchQueue.global().async {
             try? handler.perform([request])
@@ -80,7 +81,7 @@ struct ContentView: View {
     func getCGOrientationFromUIImage(_ uiOrientationValue: Int?) -> CGImagePropertyOrientation {
 //Since the return from the metadata coming from a UIImage is incompatible with the metadata from CGImagePropertyOrientation, a sort of "dictionary" is needed.
         print((inputImage!.size.height/inputImage!.size.width), "Ratio")
-        if (inputImage!.size.height/inputImage!.size.width) <= 1 {
+        if (inputImage!.size.height/inputImage!.size.width) <= 1 && (inputImage!.size.height/inputImage!.size.width) != 0.75 {
             //This dispossition is the result of a trial and error research about the orientation obtained throught the Image.Orientation feature. Apparetly, with landscape photoes, the orinetaton should be modified in a mirrored way compared to that thrown by the orientation feature.
             switch uiOrientationValue {
             case 0:
@@ -102,7 +103,30 @@ struct ContentView: View {
             @unknown default:
                 fatalError()
             }
-        } else {
+        } else if (inputImage!.size.height/inputImage!.size.width) == 0.75 {
+            switch uiOrientationValue {
+                //The software seems to have special roblems with pictures having 0.75 ratio
+            case 0:
+                return .upMirrored //Check
+            case 1:
+                return .upMirrored //Check
+            case 2:
+                return .right //Check
+            case 3:
+                return .left //Check
+            case 4:
+                return .downMirrored
+            case 5:
+                return .down
+            case 6:
+                return .rightMirrored
+            case 7:
+                return .leftMirrored
+            @unknown default:
+                fatalError()
+            }
+        }
+        else {
         switch uiOrientationValue {
 //            This feature appears to have some kind of problem woth left and right when it comes to portrait photos. Whereas it has a problem with up and down when it comes to landscape photos. The options were deined based on trial and error.
         case 0:
