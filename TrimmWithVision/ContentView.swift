@@ -73,6 +73,10 @@ struct ContentView: View {
                         height: boundingBoxesArray![$0].height * geometry.size.height))
                     .stroke(Color.yellow, lineWidth: 1.5)
             }
+            
+            if (inputImage!.size.height/inputImage!.size.width) == 0.75 {
+                
+            }
         
         }
     }
@@ -80,7 +84,6 @@ struct ContentView: View {
     
     func getCGOrientationFromUIImage(_ uiOrientationValue: Int?) -> CGImagePropertyOrientation {
 //Since the return from the metadata coming from a UIImage is incompatible with the metadata from CGImagePropertyOrientation, a sort of "dictionary" is needed.
-        print((inputImage!.size.height/inputImage!.size.width), "Ratio")
         if (inputImage!.size.height/inputImage!.size.width) <= 1 && (inputImage!.size.height/inputImage!.size.width) != 0.75 {
             //This dispossition is the result of a trial and error research about the orientation obtained throught the Image.Orientation feature. Apparetly, with landscape photoes, the orinetaton should be modified in a mirrored way compared to that thrown by the orientation feature.
             switch uiOrientationValue {
@@ -103,7 +106,8 @@ struct ContentView: View {
             @unknown default:
                 fatalError()
             }
-        } else if (inputImage!.size.height/inputImage!.size.width) == 0.75 {
+        }
+        else if (inputImage!.size.height/inputImage!.size.width) == 0.75 {
             switch uiOrientationValue {
                 //The software seems to have special roblems with pictures having 0.75 ratio
             case 0:
