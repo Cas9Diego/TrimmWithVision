@@ -22,4 +22,4 @@ IMPORTANT: The Vision framework is unable to work properly in the simulator, so 
 
 How it Works:
                 
-Tap the "choose a picture" button, a sheet will display to allow you to choose a photo by tapping on it. After tapping on the photo, press the "Scan" button, a text will appear below that button displaying the number of faces in the picture. The detected faces will also be squared in yellow. 
+Tap the "choose a picture" button, a sheet will be displayed to allow you to choose a photo by tapping on it. After tapping on the photo, press the "Scan" button, a text will appear below that button displaying the number of faces in the picture. The detected faces will also be squared in yellow. 
